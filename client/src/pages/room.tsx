@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import { useParams } from "react-router-dom"
-import { ArrowRight, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 import amaLogo from "../assets/ama-logo.svg"
-import { Message } from "../components/message";
+
+import { Messages } from "../components/messages";
+import { CreateMessageForm } from "../components/create-message-form";
 
 export function Room() {
   const params = useParams<{ roomId: string }>();
@@ -16,7 +19,7 @@ export function Room() {
     }
 
     navigator.clipboard.writeText(url);
-    toast.info("The room URL was copied to your clipboard");
+    toast.info("O link da sala foi copiado para área de transferência");
   }
 
   return (
@@ -40,38 +43,12 @@ export function Room() {
 
       <div className="h-px w-full bg-zinc-900"></div>
 
-      <form
-        // action={handleCreateRoom}
-        className="flex items-center gap-2 p-2 rounded-xl bg-zinc-900 border border-zinc-800 ring-orange-400 ring-offset-2 ring-offset-zinc-950 focus-within:ring-1"
-      >
-        <input
-          type="text"
-          name="theme"
-          placeholder="Qual a sua pergunta?"
-          autoComplete="off"
-          className="flex-1 mx-2 outline-none text-sm bg-transparent text-zinc-100 placeholder:text-zinc-500"
-        />
-        <button
-          type="submit"
-          className="flex items-center px-3 py-1.5 gap-1.5 rounded-lg font-medium text-sm bg-orange-400 text-orange-950 transition-colors hover:bg-orange-500"
-        >
-          Criar pergunta
-          <ArrowRight className="size-4" />
-        </button>
-      </form>
+      <CreateMessageForm />
 
       <main>
-        <ol className="list-decimal list-outside px-3 space-y-8">
-          <Message
-            text="O que é GoLang e quais são suas principais vantagens em comparação com outras linguagens de programação como Python, Java ou C++?"
-            amountOfReactions={162}
-            answered
-          />
-          <Message
-            text="Como funcionam as goroutines em GoLang e por que elas são importantes para a concorrência e paralelismo?"
-            amountOfReactions={142}
-          />
-        </ol>
+        <Suspense fallback={<p>loading...</p>}>
+          <Messages />
+        </Suspense>
       </main>
   </div>
   )
